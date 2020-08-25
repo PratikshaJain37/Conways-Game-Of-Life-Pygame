@@ -1,0 +1,10 @@
+Logic for zero player game:
+
+1. fill screen with 64 squares, assign array for their status
+2. put half as status = 0, half as status = 1
+1 = alive 0 = dead
+3. now, model updates every 100 ms
+if random number is greater than alive ratio, it is alive, else dead
+alive ratio = numbers of players alive around them/ total no. of players around them
+3B. map array to model
+4. put options to display bar graph/line graph simultaneously?
