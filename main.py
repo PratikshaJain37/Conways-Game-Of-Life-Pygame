@@ -29,7 +29,7 @@ running = True
 clock = pygame.time.Clock()
 
 # Defining Colors 
-Colors = [(random.randint(1,256),random.randint(0,256),random.randint(0,256)) for i in range(5)]
+COLORS = [(random.randint(1,256),random.randint(0,256),random.randint(0,256)) for i in range(5)]
 COLOR_DEAD = (0,0,0)
 
 # Initialize Status Array 
@@ -44,7 +44,6 @@ for i in range(INT):
         if random.random() > 0.8:
             current_status_array[i][j] = 1
 
-
 # ---------------------#
 
 # For Title Text to be displayed
@@ -52,6 +51,7 @@ for i in range(INT):
 # Defining font style and size
 font = pygame.font.Font('freesansbold.ttf', 32) 
 
+# Defining position of rect and font
 text_title = font.render("Conway's Game of Life", True, (255,255,255), (0,0,0))
 textRectTitle = text_title.get_rect()
 textRectTitle.center = (40+INT*SIZE/2, 40)
@@ -74,7 +74,7 @@ class Box():
         if self.alive == 0:
             self.surf.fill(COLOR_DEAD)
         else:
-            self.surf.fill(random.choice(Colors))
+            self.surf.fill(random.choice(COLORS))
         screen.blit(self.surf,self.rect)
 
     # Function to update surface; as per current_status_array
