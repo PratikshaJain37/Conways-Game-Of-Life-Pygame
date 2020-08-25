@@ -1,4 +1,4 @@
-# Main.py #
+# Main.py - Conway's Game of Life #
 # Author: Pratiksha Jain #
 
 # ---------------------#
@@ -9,29 +9,52 @@ from pygame.locals import *
 from helpers import *
 import random
 import numpy as np
+import time
 
 # ---------------------#
+
+# Initialize number of rows/columns
+INT = 100
+INT_SQ = INT*INT
+
+# Initialize size of arrays
+SIZE = 5
 
 # Initialize Pygame
 pygame.init()
 
 # Initialize screen, status and clock
-screen = pygame.display.set_mode((700,700))
+screen = pygame.display.set_mode((80+INT*SIZE,160+INT*SIZE))
 running = True
 clock = pygame.time.Clock()
 
 # Defining Colors 
-DARK_BLUE = (0,128,255)
-BLUE = (0,200,255)
+Colors = [(random.randint(1,256),random.randint(0,256),random.randint(0,256)) for i in range(5)]
+COLOR_DEAD = (0,0,0)
 
-# Initialize number of rows/columns
-INT = 6
-INT_SQ = INT*INT
+# Initialize Status Array 
+current_status_array = np.zeros((INT,INT), dtype=int)
 
-# Initialize Status Array - Making an array with half dead and half alive
-zero = np.zeros((INT,INT//2), dtype=int)
-one = np.ones((INT,INT//2), dtype=int)
-current_status_array = np.concatenate((zero,one), axis=1)
+# ---------------------#
+
+# Make random status array
+
+for i in range(INT):
+    for j in range(INT):
+        if random.random() > 0.8:
+            current_status_array[i][j] = 1
+
+
+# ---------------------#
+
+# For Title Text to be displayed
+
+# Defining font style and size
+font = pygame.font.Font('freesansbold.ttf', 32) 
+
+text_title = font.render("Conway's Game of Life", True, (255,255,255), (0,0,0))
+textRectTitle = text_title.get_rect()
+textRectTitle.center = (40+INT*SIZE/2, 40)
 
 # ---------------------#
 
@@ -40,25 +63,29 @@ class Box():
     
     # Status can be dead (0) or alive(1); 
     def __init__(self, x, y, alive):
-        self.alive = alive
         self.x = x
         self.y = y
+        self.alive = alive
+        self.surf = pygame.Surface((SIZE,SIZE))
+        self.rect = (40 + SIZE*self.y, 100 + SIZE*self.x)
     
-    # Function to draw python rect; color depends on alive status
-    def draw(self):
+    # Function to fill surface with color
+    def assign_color(self):
         if self.alive == 0:
-            pygame.draw.rect(screen, DARK_BLUE, Rect(30 + 11*self.y, 30 + 11*self.x, 10,10))
+            self.surf.fill(COLOR_DEAD)
         else:
-            pygame.draw.rect(screen, BLUE, Rect(30 + 11*self.y, 30 + 11*self.x, 10,10))
+            self.surf.fill(random.choice(Colors))
+        screen.blit(self.surf,self.rect)
 
-    # Function to update python rect; as per current_status_array
+    # Function to update surface; as per current_status_array
     def update(self):
         self.alive = current_status_array[self.x][self.y]
-        self.draw()
+        self.assign_color()
+     
 
 # ---------------------#
 
-# Creating 64 instances of box class, and appending them to a list for accessibility
+# Creating 'INT_SQ' instances of box class, and appending them to a list for accessibility
 
 boxes = []
 
@@ -73,9 +100,8 @@ for i in range(INT_SQ):
 
 # ---------------------#
 
-# Main pygame loop
+# Main python loop
 
-z = 0
 while running:
     
     # Main python quit function
@@ -83,22 +109,18 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # For updating array
-    screen.lock()
-
+    # For updating array and boxes status
     current_status_array = UpdateArray(current_status_array, INT)
     for box in boxes:
         box.update()
-        
-    
-    # Refresh screen
-    screen.unlock()
-    pygame.display.update()
-    clock.tick(1)
-    print(current_status_array)
 
-    if z > 3:
-        running = False
+    # Display Title
+    screen.blit(text_title, textRectTitle)
+
+    # Refresh screen
+    pygame.display.update()
+
+    # A more optimal version of the clock.tick() function, determines fps of display basically
+    time.sleep(0.5)
 
 # ---------------------#
-
