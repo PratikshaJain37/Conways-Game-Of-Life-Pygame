@@ -6,10 +6,40 @@
 # Imports #
 import random
 import numpy as np
+import pygame
 
 # ---------------------#
 
+# Make random status array
+
+def RandomizeArray(INT, current_status_array):
+    for i in range(INT):
+        for j in range(INT):
+            if random.random() > 0.9:
+                current_status_array[i][j] = 1
+    
+# ----------#
+
+# For displaying text
+
+def DisplayText(content, size, color, location, color_bg=None, fontstyle="00-starmap.TTF", antialias=False):
+
+    # Defining font style and size
+    font = pygame.font.Font(fontstyle, size)
+
+    # Rendering it
+    text = font.render(content, antialias, color, color_bg, )
+
+    # Setting it's location
+    rect = text.get_rect()
+    rect.center = location
+
+    return text, rect
+
+# ----------#
+
 # For updating the array
+
 def UpdateArray(current_status, INT):
 
     #Generating new updated array (empty)
@@ -50,6 +80,7 @@ def GetStatus(alive_neigh, status):
 # ----------#
 
 # For calculating number of alive neighbors
+
 def GetAliveNeigh(x,y,current_status,INT):
     
     alive_neigh = 0

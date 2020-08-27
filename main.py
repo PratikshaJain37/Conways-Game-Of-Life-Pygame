@@ -39,32 +39,18 @@ white = (255,255,255)
 COLORS = [(random.randint(1,256),random.randint(0,256),random.randint(0,256)) for i in range(5)]
 COLOR_DEAD = black
 
-# Defining basic font
+# Defining default font
 starmap = "00-starmap.TTF"
 
-# Initialize Status Array 
+# Initialize Status Array and make it randomly filled with 0's and 1's
 current_status_array = np.zeros((INT,INT), dtype=int)
-
-# ---------------------#
-
-# Make random status array
-
-for i in range(INT):
-    for j in range(INT):
-        if random.random() > 0.8:
-            current_status_array[i][j] = 1
+RandomizeArray(INT, current_status_array)
 
 # ---------------------#
 
 # For Title Text to be displayed
 
-# Defining font style and size
-font_title = pygame.font.Font(starmap, 32) 
-
-# Defining position of rect
-text_title = font_title.render(" Conway's Game of Life ", True, white, darkgrey)
-textrect_title = text_title.get_rect()
-textrect_title.center = (40+INT*SIZE/2, 40)
+title_text, title_rect = DisplayText(" Conway's Game of Life ", 32,white,(40+INT*SIZE/2, 40) ,color_bg=darkgrey, antialias=True)
 
 # ---------------------#
 
@@ -110,55 +96,67 @@ for i in range(INT_SQ):
 
 # ---------------------#
 
-# Introduction start screen
-# sort this out! add comments + see if text can be shifted to helpers.py
-# The button works!
+# Loop for Start Screen
+
+# Setting up the start button, it's rect and the label on it
+start_button = (width/2-70, height/2-20)
+start_button_rect = Rect(start_button[0],start_button[1],140,40)
+
+intro_start_text, intro_start_rect = DisplayText('Start', 20, black,(width/2,height/2))
 
 
+# For displaying title text
+intro_title_text, intro_title_rect = DisplayText("Welcome to Conway's Game of Life", 32, white, (width/2,height/4) , color_bg=darkgrey)
+
+# For displaying Created By text
+intro_creator_text, intro_creator_rect = DisplayText("Made by Pratiksha Jain", 20, lightgrey, (width/2, height*3/4))
+
+# For displaying Credits text
+intro_credits_text, intro_credits_rect = DisplayText("Font Used: 00-Starmap by Daniel Zadorozny", 20, lightgrey, (width/2,height*3/4+25))
+
+
+# Initializing status for loop
 intro = True
 
 while intro:
     
-    screen.fill((0,0,0))
+    # For getting location of mouse
     mouse = pygame.mouse.get_pos() 
-    intro_title = pygame.font.Font(starmap, 32)
-    introlabel = intro_title.render("Welcome to Conway's Game of Life", True, white, darkgrey)
-    introtextRect = introlabel.get_rect()
-    introtextRect.center = (width/2,height/4)
-    intro_text = pygame.font.Font(starmap, 25)
-    intro_text1 = intro_text.render("Made by Pratiksha Jain",False, lightgrey)
-    intro_text2 = intro_text.render("Font Used: 00-Starmap by Daniel Zadorozny",False, lightgrey)
-    start_label = intro_text.render("Start", False, black)
-    
-    if width/2-70 <= mouse[0] <= width/2+70 and height/2-20 <= mouse[1] <= height/2+20: 
-        pygame.draw.rect(screen,(170,170,170),[width/2-70,height/2-20,140,40])      
+
+    # For hover colour change - colour changes to light grey
+    if start_button[0] <= mouse[0] <= start_button[0]+140 and start_button[1] <= mouse[1] <= start_button[1]+40: 
+        pygame.draw.rect(screen, lightgrey, start_button_rect)      
     else: 
-        pygame.draw.rect(screen,(100,100,100),[width/2-70,height/2-20,140,40]) 
+        pygame.draw.rect(screen, darkgrey, start_button_rect) 
     
+    # Loop for events
     for event in pygame.event.get():
         
-        if event.type==MOUSEBUTTONDOWN:
-            
-            if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40:
-                screen.fill((0,0,0))
+        # If start button is pressed, the intro is turned off
+        if event.type == MOUSEBUTTONDOWN:
+            if start_button[0] <= mouse[0] <= start_button[0]+140 and start_button[1] <= mouse[1] <= start_button[1]+40:
                 intro = False
         
+        # Main quit function
         if event.type == QUIT:
             exit()
     
-    screen.blit(start_label,[width/2-35,height/2-10,140,40])
-    screen.blit(intro_text1, [15, height*3/4])
-    screen.blit(intro_text2, [15, height*3/4+25])
-    screen.blit(introlabel,introtextRect)
-    pygame.display.flip()
-    screen.fill((0,0,0))
+    # Blitting the text on to the screen surface
+    screen.blit(intro_title_text,intro_title_rect)
+    screen.blit(intro_creator_text, intro_creator_rect)
+    screen.blit(intro_credits_text, intro_credits_rect)
+    screen.blit(intro_start_text, intro_start_rect)
 
+    
+    # Refresh screen
+    pygame.display.update()
 
-
-
+    # Setting the screen to black - default
+    screen.fill(black)
+    
 # ---------------------#
 
-# Main python loop
+# Main python loop for game
 
 while running:
     
@@ -173,7 +171,7 @@ while running:
         box.update()
 
     # Display Title
-    screen.blit(text_title, textrect_title)
+    screen.blit(title_text, title_rect)
 
     # Refresh screen
     pygame.display.update()
