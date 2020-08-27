@@ -23,14 +23,24 @@ SIZE = 5
 # Initialize Pygame
 pygame.init()
 
-# Initialize screen, status and clock
-screen = pygame.display.set_mode((80+INT*SIZE,160+INT*SIZE))
+# Initialize screen and status
+width = 80+INT*SIZE
+height = 160+INT*SIZE
+screen = pygame.display.set_mode((width,height))
 running = True
-clock = pygame.time.Clock()
 
-# Defining Colors 
+# Defining Colours 
+
+black = (0,0,0)
+darkgrey = (50,50,50)
+lightgrey = (170,170,170)
+white = (255,255,255)
+
 COLORS = [(random.randint(1,256),random.randint(0,256),random.randint(0,256)) for i in range(5)]
-COLOR_DEAD = (0,0,0)
+COLOR_DEAD = black
+
+# Defining basic font
+starmap = "00-starmap.TTF"
 
 # Initialize Status Array 
 current_status_array = np.zeros((INT,INT), dtype=int)
@@ -49,12 +59,12 @@ for i in range(INT):
 # For Title Text to be displayed
 
 # Defining font style and size
-font = pygame.font.Font('freesansbold.ttf', 32) 
+font_title = pygame.font.Font(starmap, 32) 
 
-# Defining position of rect and font
-text_title = font.render("Conway's Game of Life", True, (255,255,255), (0,0,0))
-textRectTitle = text_title.get_rect()
-textRectTitle.center = (40+INT*SIZE/2, 40)
+# Defining position of rect
+text_title = font_title.render(" Conway's Game of Life ", True, white, darkgrey)
+textrect_title = text_title.get_rect()
+textrect_title.center = (40+INT*SIZE/2, 40)
 
 # ---------------------#
 
@@ -83,7 +93,7 @@ class Box():
         self.assign_color()
      
 
-# ---------------------#
+# ----------#
 
 # Creating 'INT_SQ' instances of box class, and appending them to a list for accessibility
 
@@ -97,6 +107,54 @@ for i in range(INT_SQ):
 
     # Alive status depening on current array
     boxes.append(Box(x,y,current_status_array[x][y]))
+
+# ---------------------#
+
+# Introduction start screen
+# sort this out! add comments + see if text can be shifted to helpers.py
+# The button works!
+
+
+intro = True
+
+while intro:
+    
+    screen.fill((0,0,0))
+    mouse = pygame.mouse.get_pos() 
+    intro_title = pygame.font.Font(starmap, 32)
+    introlabel = intro_title.render("Welcome to Conway's Game of Life", True, white, darkgrey)
+    introtextRect = introlabel.get_rect()
+    introtextRect.center = (width/2,height/4)
+    intro_text = pygame.font.Font(starmap, 25)
+    intro_text1 = intro_text.render("Made by Pratiksha Jain",False, lightgrey)
+    intro_text2 = intro_text.render("Font Used: 00-Starmap by Daniel Zadorozny",False, lightgrey)
+    start_label = intro_text.render("Start", False, black)
+    
+    if width/2-70 <= mouse[0] <= width/2+70 and height/2-20 <= mouse[1] <= height/2+20: 
+        pygame.draw.rect(screen,(170,170,170),[width/2-70,height/2-20,140,40])      
+    else: 
+        pygame.draw.rect(screen,(100,100,100),[width/2-70,height/2-20,140,40]) 
+    
+    for event in pygame.event.get():
+        
+        if event.type==MOUSEBUTTONDOWN:
+            
+            if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40:
+                screen.fill((0,0,0))
+                intro = False
+        
+        if event.type == QUIT:
+            exit()
+    
+    screen.blit(start_label,[width/2-35,height/2-10,140,40])
+    screen.blit(intro_text1, [15, height*3/4])
+    screen.blit(intro_text2, [15, height*3/4+25])
+    screen.blit(introlabel,introtextRect)
+    pygame.display.flip()
+    screen.fill((0,0,0))
+
+
+
 
 # ---------------------#
 
@@ -115,12 +173,12 @@ while running:
         box.update()
 
     # Display Title
-    screen.blit(text_title, textRectTitle)
+    screen.blit(text_title, textrect_title)
 
     # Refresh screen
     pygame.display.update()
 
     # A more optimal version of the clock.tick() function, determines fps of display basically
-    time.sleep(0.5)
+    time.sleep(0.1)
 
 # ---------------------#

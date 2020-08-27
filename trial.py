@@ -31,6 +31,37 @@ for count in range(10):
     else:
         rectangles.append(Rectangle(random_pos, (120,0,255),count))
 
+width = screen.get_width() 
+height = screen.get_height()
+color_light = (170,170,170) 
+color_dark = 
+
+intro = True
+while (intro == True):
+    screen.fill((0,0,0))
+    mouse = pygame.mouse.get_pos() 
+    myfont=pygame.font.Font("00-starmap.TTF", 30)
+    nlabel=myfont.render("Welcome to Conway's Game of Life", 1, (255, 0, 0))
+
+    
+    screen.fill((60,25,60))
+    if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40: 
+        pygame.draw.rect(screen,color_light,[width/2,height/2,140,40]) 
+          
+    else: 
+        pygame.draw.rect(screen,color_dark,[width/2,height/2,140,40]) 
+    
+    
+    
+    for event in pygame.event.get():
+        if event.type==MOUSEBUTTONDOWN:
+            if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40:
+                screen.fill((0,0,0))
+                intro = False
+        if event.type == QUIT:
+            exit()
+    screen.blit(nlabel,(200,200))
+    pygame.display.flip()
 
 while True:
     for event in pygame.event.get():
