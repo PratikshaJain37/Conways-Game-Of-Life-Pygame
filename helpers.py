@@ -15,7 +15,7 @@ import pygame
 def RandomizeArray(INT, current_status_array):
     for i in range(INT):
         for j in range(INT):
-            if random.random() > 0.9:
+            if random.random() > 0.8:
                 current_status_array[i][j] = 1
     
 # ----------#

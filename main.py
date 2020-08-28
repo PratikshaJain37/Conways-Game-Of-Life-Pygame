@@ -10,6 +10,7 @@ from helpers import *
 import random
 import numpy as np
 import time
+import os
 
 # ---------------------#
 
@@ -25,9 +26,10 @@ pygame.init()
 
 # Initialize screen and status
 width = 80+INT*SIZE
-height = 160+INT*SIZE
+height = 160+INT*SIZE+50
 screen = pygame.display.set_mode((width,height))
 running = True
+SLEEPTIME = 0.1
 
 # Defining Colours 
 
@@ -51,6 +53,44 @@ RandomizeArray(INT, current_status_array)
 # For Title Text to be displayed
 
 title_text, title_rect = DisplayText(" Conway's Game of Life ", 32,white,(40+INT*SIZE/2, 40) ,color_bg=darkgrey, antialias=True)
+
+# ---------------------#
+
+# For play, pause, stop, faster, slower buttons to be displayed
+
+play = pygame.image.load("images/play.jpg").convert()
+play = pygame.transform.scale(play, (40,40))
+
+play_light = pygame.image.load("images/play_light.jpg").convert()
+play_light = pygame.transform.scale(play_light, (40,40))
+
+
+stop = pygame.image.load("images/stop.jpg").convert()
+stop = pygame.transform.scale(stop, (40,40))
+
+stop_light = pygame.image.load("images/stop_light.jpg").convert()
+stop_light = pygame.transform.scale(stop_light, (40,40))
+
+
+pause = pygame.image.load("images/pause.jpg").convert()
+pause = pygame.transform.scale(pause, (40,40))
+
+pause_light = pygame.image.load("images/pause_light.jpg").convert()
+pause_light = pygame.transform.scale(pause_light, (40,40))
+
+
+faster = pygame.image.load("images/faster.jpg").convert()
+faster = pygame.transform.scale(faster, (40,40))
+
+faster_light = pygame.image.load("images/faster_light.jpg").convert()
+faster_light = pygame.transform.scale(faster_light, (40,40))
+
+
+slower = pygame.image.load("images/slower.jpg").convert()
+slower = pygame.transform.scale(slower, (40,40))
+
+slower_light = pygame.image.load("images/slower_light.jpg").convert()
+slower_light = pygame.transform.scale(slower_light, (40,40))
 
 # ---------------------#
 
@@ -159,11 +199,66 @@ while intro:
 # Main python loop for game
 
 while running:
-    
-    # Main python quit function
+
+    # For getting location of mouse
+    mouse = pygame.mouse.get_pos() 
+
+    # Main python event function
     for event in pygame.event.get():
+
+        # Main quit function
         if event.type == pygame.QUIT:
             running = False
+
+        # For the buttons
+        if event.type == MOUSEBUTTONDOWN:
+            
+            # Play button
+            if width/2-20 <= mouse[0] <= width/2+20 and 130+SIZE*INT <= mouse[1] <= 130+SIZE*INT+40:
+                running = True
+            
+            # Pause button
+            if width/2+30 <= mouse[0] <= width/2+70 and 130+SIZE*INT <= mouse[1] <= 130+SIZE*INT+40:
+                running = True
+            
+            # Stop button
+            if width/2+80 <= mouse[0] <= width/2+120 and 130+SIZE*INT <= mouse[1] <= 130+SIZE*INT+40:
+                running = False
+            
+            # Faster button
+            if width/2-70 <= mouse[0] <= width/2-30 and 130+SIZE*INT <= mouse[1] <= 130+SIZE*INT+40:
+                running = True
+            
+            # Slower button
+            if width/2-120 <= mouse[0] <= width/2-80 and 130+SIZE*INT <= mouse[1] <= 130+SIZE*INT+40:
+                running = True
+
+    # For hover colour change - colour changes to light grey
+    if width/2-20 <= mouse[0] <= width/2+20 and 130+SIZE*INT <= mouse[1] <= 130+SIZE*INT+40:
+        screen.blit(play_light, (width/2-20, 130+SIZE*INT))      
+    else: 
+        screen.blit(play, (width/2-20, 130+SIZE*INT)) 
+    
+    if width/2+30 <= mouse[0] <= width/2+70 and 130+SIZE*INT <= mouse[1] <= 130+SIZE*INT+40:
+        screen.blit(pause_light, (width/2+30, 130+SIZE*INT))      
+    else: 
+        screen.blit(pause, (width/2+30, 130+SIZE*INT)) 
+
+    if width/2+80 <= mouse[0] <= width/2+120 and 130+SIZE*INT <= mouse[1] <= 130+SIZE*INT+40:
+        screen.blit(stop_light, (width/2+80, 130+SIZE*INT))      
+    else: 
+        screen.blit(stop, (width/2+80, 130+SIZE*INT)) 
+    
+    if width/2-70 <= mouse[0] <= width/2-30 and 130+SIZE*INT <= mouse[1] <= 130+SIZE*INT+40:
+        screen.blit(faster_light, (width/2-70, 130+SIZE*INT))      
+    else: 
+        screen.blit(faster, (width/2-70, 130+SIZE*INT)) 
+    
+    if width/2-120 <= mouse[0] <= width/2-80 and 130+SIZE*INT <= mouse[1] <= 130+SIZE*INT+40:
+        screen.blit(slower_light, (width/2-120, 130+SIZE*INT))      
+    else: 
+        screen.blit(slower, (width/2-120, 130+SIZE*INT)) 
+
 
     # For updating array and boxes status
     current_status_array = UpdateArray(current_status_array, INT)
@@ -177,6 +272,8 @@ while running:
     pygame.display.update()
 
     # A more optimal version of the clock.tick() function, determines fps of display basically
-    time.sleep(0.1)
+    time.sleep(SLEEPTIME)
+
+
 
 # ---------------------#
