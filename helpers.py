@@ -38,6 +38,12 @@ def DisplayText(content, size, color, location, color_bg=None, fontstyle="00-sta
 
 # ----------#
 
+def BlitObjects(blit_list, screen):
+    for source, dest in blit_list:
+        screen.blit(source, dest)
+
+# ----------#
+
 # For updating the array
 
 def UpdateArray(current_status, INT):
